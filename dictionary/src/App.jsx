@@ -1,6 +1,7 @@
 // import { useState } from 'react'
 import './App.css'
 import Header from './components/header/Header'
+import CardSlider from './components/cardSlider/CardSlider'
 import Card from './components/card/Card'
 import DictionaryTable from './components/table/Table'
 import Footer from './components/footer/Footer'
@@ -12,8 +13,8 @@ function App() {
   return (
     <div>
       <Header />
-      <main>
-        <div className="card-container">
+      <main className="card-container">
+        <CardSlider>
           {data.map((card) => (
             <Card
               key={card.id}
@@ -22,11 +23,11 @@ function App() {
               russian={card.russian}
             />
           ))}
-        </div>
-        <div>
-          <DictionaryTable />
-        </div>
+        </CardSlider>
       </main>
+      <div>
+        <DictionaryTable />
+      </div>
       <Footer />
     </div>
   )
