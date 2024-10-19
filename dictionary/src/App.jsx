@@ -28,7 +28,7 @@ function App() {
   return (
     <div>
       <Header />
-      <Menu />
+      <Menu title="Меню" />
       <Outlet />
       <Footer />
     </div>
