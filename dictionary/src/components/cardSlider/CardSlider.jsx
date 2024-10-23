@@ -42,7 +42,7 @@ const CardSlider = ({ initialIndex = 0, wordsData = words }) => {
                 <Button name="Вперед" onClick={nextCard} />
             </div>
             <div className="counter">
-                {currentIndex}/{data.length}
+                {currentIndex + 1}/{data.length}
             </div>
         </div>
     )

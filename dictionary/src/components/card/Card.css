@@ -1,6 +1,6 @@
 /* Стили для карточек слов */
 .word-card {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -12,10 +12,51 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 80%;
     height: 40%;
-    cursor: pointer;
+    cursor: pointer; */
+    perspective: 1000px; /* Добавляем перспективу для 3D эффекта */
 }
 
-.word-card h2 {
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s; /* Плавный переход */
+    transform-style: preserve-3d; /* Позволяет дочерним элементам сохранять 3D-эффект */
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Скрывает обратную сторону при повороте */
+}
+
+.card-front {
+    /* Лицевая сторона */
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-back {
+    /* Задняя сторона */
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: rotateY(180deg); /* Поворачиваем заднюю сторону */
+}
+
+/* .word-card h2 {
     color: #333;
     font-size: 18px;
     margin-bottom: 10px;
@@ -25,7 +66,7 @@
     color: #666;
     font-size: 14px;
     margin-bottom: 10px;
-}
+} */
 
 /* .card-container {
     display: flex;
@@ -41,4 +82,8 @@
     height: 50vh; /* Задаем высоту контейнера на весь экран */
     padding: 20px; /* Добавляем отступы */
     box-sizing: border-box; /* Учитываем отступы и границы в общей ширине и высоте */
+}
+
+.turn{
+    transform: rotateY(180deg);
 }
