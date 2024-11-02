@@ -19,6 +19,9 @@ const CardSlider = ({ initialIndex = 0, wordsData = words }) => {
     // Состояние для текущей карточки 
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
+    // Состояние для подсчета выученных слов
+    const [learnedWords, setLearnedWords] = useState(0);
+
     // Функция для переключения на следующую карточку
     const nextCard = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
@@ -27,6 +30,11 @@ const CardSlider = ({ initialIndex = 0, wordsData = words }) => {
     // Функция для переключения на предыдущую карточку
     const prevCard = () => {
         setCurrentIndex((prevIndex) => (prevIndex - 1 + data.length) % data.length);
+    };
+
+    // Функция для подсчета изученных слов (её мы передадим в дочерний компонент)
+    const handleLearnedWord = () => {
+        setLearnedWords((prevCount) => prevCount + 1);
     };
 
     return (
@@ -38,11 +46,13 @@ const CardSlider = ({ initialIndex = 0, wordsData = words }) => {
                     english={data[currentIndex].english || wordsData[currentIndex].english}
                     transcription={data[currentIndex].transcription || wordsData[currentIndex].transcription}
                     russian={data[currentIndex].russian || wordsData[currentIndex].russian}
+                    onLearnedWord={handleLearnedWord} //передали функцию из родительского компонента  (нам также нужно использовать эту функцию в самом компоненте card, когда пользователь нажимает на кнопку "показать перевод")
                 />
                 <Button name="Вперед" onClick={nextCard} />
             </div>
             <div className="counter">
-                {currentIndex + 1}/{data.length}
+                {currentIndex + 1}/{data.length} <br />
+                <p>Изучено слов: {learnedWords}</p>
             </div>
         </div>
     )
