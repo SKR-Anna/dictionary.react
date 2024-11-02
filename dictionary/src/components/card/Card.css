@@ -1,6 +1,6 @@
 /* Стили для карточек слов */
 .word-card {
-    /* display: flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -10,9 +10,9 @@
     border-radius: 5px;
     background-color: #f9f9f9;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 80%;
+    width: 30%;
     height: 40%;
-    cursor: pointer; */
+    cursor: pointer; 
     perspective: 1000px; /* Добавляем перспективу для 3D эффекта */
 }
 
@@ -80,7 +80,7 @@
     justify-content: center; /* Центрируем карточку по горизонтали */
     align-items: center; /* Центрируем карточку по вертикали */
     height: 50vh; /* Задаем высоту контейнера на весь экран */
-    padding: 20px; /* Добавляем отступы */
+    padding: 20px; /*Добавляем отступы */
     box-sizing: border-box; /* Учитываем отступы и границы в общей ширине и высоте */
 }
 
