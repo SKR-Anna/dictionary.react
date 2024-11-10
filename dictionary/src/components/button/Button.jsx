@@ -1,11 +1,17 @@
 //импортирую стили
+import { forwardRef } from "react";
 import styles from "./Button.module.css"
 
 
-function Button(props) {
+const Button = forwardRef(function Button(props, ref) {
     return (
-        < button className={styles.button} onClick={props.onClick}> {props.name}</ button >
-    )
-}
+        < button
+            ref={ref}
+            className={styles.button}
+            onClick={props.onClick}>
+            {props.name}
+        </ button >
+    );
+});
 
 export default Button;
