@@ -2,19 +2,29 @@ import { useState, useEffect, useRef } from "react"
 import Button from "../button/Button"
 import "./Card.css"
 
-function Card({ id, english, transcription, russian, onLearnedWord }) {
+function Card({ id, english, transcription, russian, onLearnedWord, index, learnedWords }) {
     const [turned, setTurned] = useState(false);
     const buttonRef = useRef(null); // создаем реф для кнопки
 
-    const [isLearned, setIsLearned] = useState(false); // состояние для отслеживания перевода
+    //const [isLearned, setIsLearned] = useState(false); // состояние для отслеживания перевода
+
 
     const handleTurnedState = () => {
-        setTurned(!turned);
-        if (!turned && !isLearned) { // Увеличиваем счетчик только при первом переводе
-            onLearnedWord(); // Вызываем функцию для увеличения счетчика (функция пришла из родительского компонента - кард слайдер)
-            setIsLearned(true); // Отмечаем, что слово было переведено
-        }
+        setTurned((prevTurned) => {
+            const newTurned = !prevTurned; // новое состояние переворота
+            if (newTurned && !learnedWords[index]) {
+                // Увеличиваем счетчик только если слово еще не изучено
+                onLearnedWord(); // Вызываем функцию для увеличения счетчика (функция пришла из родительского компонента - кард слайдер)
+                learnedWords[index] = true; // Отмечаем, что слово было переведено
+            }
+            return newTurned;
+        });
     };
+    //     if (!turned && !isLearned) { // Увеличиваем счетчик только при первом переводе
+    //         onLearnedWord(); // Вызываем функцию для увеличения счетчика (функция пришла из родительского компонента - кард слайдер)
+    //         setIsLearned(true); // Отмечаем, что слово было переведено
+    //     }
+    // };
 
     useEffect(() => {
         // Устанавливаем фокус на кнопку, когда компонент монтируется
@@ -23,24 +33,7 @@ function Card({ id, english, transcription, russian, onLearnedWord }) {
         }
     }, []); // Пустой массив зависимостей означает, что этот эффект выполнится только один раз после первого рендера
 
-    // вариант без ошибок в консоли, но кнопка не работает
-    // const cardRef = useRef(null);
-    // const handleTurnedState = () => {
-    //     cardRef.current.addEventListener(
-    //         'transitioned', () => {
-    //             cardRef.current.classList.toggle('turn');
-    //         },
-    //         { once: true },
-    //     );
-    // };
 
-    // консоль выдает ошибку, но карточки крутятся
-    // const cardRef = useRef(null);
-    // const handleTurnedState = () => {
-    //     cardRef.current.classList.toggle('turn')(
-    //         { once: true },
-    //     );
-    // };
 
     return (
         < div id={id} className="word-card" >

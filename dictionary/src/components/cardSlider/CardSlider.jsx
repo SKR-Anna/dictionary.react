@@ -13,6 +13,7 @@ const words = {
 
 
 
+
 const CardSlider = ({ initialIndex = 0, wordsData = words }) => {
 
 
@@ -46,7 +47,9 @@ const CardSlider = ({ initialIndex = 0, wordsData = words }) => {
                     english={data[currentIndex].english || wordsData[currentIndex].english}
                     transcription={data[currentIndex].transcription || wordsData[currentIndex].transcription}
                     russian={data[currentIndex].russian || wordsData[currentIndex].russian}
+                    index={data.index}
                     onLearnedWord={handleLearnedWord} //передали функцию из родительского компонента  (нам также нужно использовать эту функцию в самом компоненте card, когда пользователь нажимает на кнопку "показать перевод")
+                    learnedWords={data}
                 />
                 <Button name="Вперед" onClick={nextCard} />
             </div>
