@@ -2,29 +2,33 @@ import { useState, useEffect, useRef } from "react"
 import Button from "../button/Button"
 import "./Card.css"
 
-function Card({ id, english, transcription, russian, onLearnedWord, index, learnedWords }) {
+function Card({ id, english, transcription, russian, onLearnedWord }) { // убрала из пропсов index, learnedWords
     const [turned, setTurned] = useState(false);
     const buttonRef = useRef(null); // создаем реф для кнопки
 
     //const [isLearned, setIsLearned] = useState(false); // состояние для отслеживания перевода
 
-
-    const handleTurnedState = () => {
-        setTurned((prevTurned) => {
-            const newTurned = !prevTurned; // новое состояние переворота
-            if (newTurned && !learnedWords[index]) {
-                // Увеличиваем счетчик только если слово еще не изучено
-                onLearnedWord(); // Вызываем функцию для увеличения счетчика (функция пришла из родительского компонента - кард слайдер)
-                learnedWords[index] = true; // Отмечаем, что слово было переведено
-            }
-            return newTurned;
-        });
-    };
+    // const handleTurnedState = () => {
+    //     setTurned(!turned);
     //     if (!turned && !isLearned) { // Увеличиваем счетчик только при первом переводе
     //         onLearnedWord(); // Вызываем функцию для увеличения счетчика (функция пришла из родительского компонента - кард слайдер)
     //         setIsLearned(true); // Отмечаем, что слово было переведено
     //     }
     // };
+
+
+
+    const handleTurnedState = () => {
+        setTurned((prevTurned) => {
+            const newTurned = !prevTurned; // новое состояние переворота
+            if (newTurned) {
+                // Увеличиваем счетчик только если слово еще не изучено
+                onLearnedWord(); // Вызываем функцию для увеличения счетчика (функция пришла из родительского компонента - кард слайдер)
+                // learnedWords[index] = true; // Отмечаем, что слово было переведено
+            }
+            return newTurned;
+        });
+    };
 
     useEffect(() => {
         // Устанавливаем фокус на кнопку, когда компонент монтируется
