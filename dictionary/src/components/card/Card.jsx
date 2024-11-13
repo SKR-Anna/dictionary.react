@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import Button from "../button/Button"
 import "./Card.css"
 
-function Card({ id, english, transcription, russian, onLearnedWord }) { // убрала из пропсов index, learnedWords
+function Card({ id, english, transcription, russian, onTranslate }) {
     const [turned, setTurned] = useState(false);
     const buttonRef = useRef(null); // создаем реф для кнопки
 
@@ -19,15 +19,7 @@ function Card({ id, english, transcription, russian, onLearnedWord }) { // уб�
 
 
     const handleTurnedState = () => {
-        setTurned((prevTurned) => {
-            const newTurned = !prevTurned; // новое состояние переворота
-            if (newTurned) {
-                // Увеличиваем счетчик только если слово еще не изучено
-                onLearnedWord(); // Вызываем функцию для увеличения счетчика (функция пришла из родительского компонента - кард слайдер)
-                // learnedWords[index] = true; // Отмечаем, что слово было переведено
-            }
-            return newTurned;
-        });
+        setTurned(!turned)
     };
 
     useEffect(() => {
@@ -46,7 +38,7 @@ function Card({ id, english, transcription, russian, onLearnedWord }) { // уб�
                 <div className="card-front">
                     <h2 className="word-card h2">{english}</h2>
                     <p className="word-card p"> {transcription}</p>
-                    <Button name="Показать перевод" onClick={handleTurnedState}
+                    <Button name="Показать перевод" onClick={() => { handleTurnedState(); onTranslate() }}
                         ref={buttonRef} />
                     {/* применили реф к кнопке */}
                 </div>
@@ -55,7 +47,7 @@ function Card({ id, english, transcription, russian, onLearnedWord }) { // уб�
                     <h2 className="word-card h2">{english}</h2>
                     <p className="word-card p"> {transcription}</p>
                     <p className="word-card p">{russian}</p>
-                    <Button name="Скрыть перевод" onClick={handleTurnedState} />
+                    <Button name="Скрыть перевод" onClick={() => { handleTurnedState(); onTranslate() }} />
                 </div>
             </div>
         </div>
