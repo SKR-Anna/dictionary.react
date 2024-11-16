@@ -11,6 +11,7 @@ import Footer from './components/footer/Footer'
 // import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 // import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Outlet } from 'react-router-dom'
+import { CardProvider } from './context/context'
 
 // const router = createBrowserRouter([
 //   {
@@ -28,10 +29,12 @@ function App() {
 
   return (
     <div>
-      <Header />
-      <Menu title="Меню" />
-      <Outlet />
-      <Footer />
+      <CardProvider>
+        <Header />
+        <Menu title="Меню" />
+        <Outlet />
+        <Footer />
+      </CardProvider>
     </div>
   )
 }

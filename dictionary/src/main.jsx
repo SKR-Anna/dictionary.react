@@ -27,6 +27,8 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/* <App /> */}
+    {/* <CardProvider> */}
     <RouterProvider router={router} />
+    {/* </CardProvider> */}
   </StrictMode>,
 )

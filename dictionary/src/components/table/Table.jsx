@@ -64,7 +64,7 @@ export default function DictionaryTable() {
         <>
             <>
                 <AddWord />
-                <SaveButton name="Сохранить" onClick={() => handleSave()} disabled={isFormValid ? false : true} />
+                <SaveButton name="Добавить слово" onClick={() => handleSave()} disabled={isFormValid ? false : true} />
             </>
             <table>
                 <thead>
