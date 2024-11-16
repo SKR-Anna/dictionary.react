@@ -3,6 +3,7 @@ import { useState } from "react" // импортируем хук
 import Button from "../button/Button" // импортируем кнопку
 import data from "../../data" //импортируем массив слов
 import "./Table.css"
+import SaveButton from "../button/SaveButton";
 
 
 export default function DictionaryTable() {
@@ -10,7 +11,7 @@ export default function DictionaryTable() {
     const [formData, setFormData] = useState({ english: '', transcription: '', russian: '' });
     const [errors, setErrors] = useState({ english: false, transcription: false, russian: false });
     const [words, setWords] = useState(data); // храним данные в состоянии, это поможет потом переключться на api, я надеюсь
-    const [currentWord, setCurrentWord] = useState({ english: '', transcription: '', russian: '' }); //состояние для отслеживания текущих значений таблицы, чтобы DictionaryTable сохранял текущее состояние редактируемых полей, а не полагался на defaultValue
+    //const [currentWord, setCurrentWord] = useState({ english: '', transcription: '', russian: '' }); //состояние для отслеживания текущих значений таблицы, чтобы DictionaryTable сохранял текущее состояние редактируемых полей, а не полагался на defaultValue
 
     const handleEdit = (index) => {
         // console.log("clicked")
@@ -19,16 +20,18 @@ export default function DictionaryTable() {
             english: data[index].english,
             transcription: data[index].transcription,
             russian: data[index].russian
-        });//!!!!!!!!!!!!!!!!!!!!!!
-        setCurrentWord(words[index]);
-        console.log(currentWord);
+        });
+        // setCurrentWord(words[index]);
+        // console.log(currentWord);
     };
 
     const handleCancel = () => {
         setEditIndex(null);
+        setFormData({ english: '', transcription: '', russian: '' }); // Сброс формы
     };
 
-    const handleSave = (index, updatedWord) => {
+    const handleSave = (index) => {
+        const updatedWord = { ...formData }; // Создаем новый объект слова
         const newWords = words.map((word, i) => (i === index ? updatedWord : word));
         setWords(newWords);
         setEditIndex(null);
@@ -42,14 +45,14 @@ export default function DictionaryTable() {
         const newData = data.filter((_, i) => i !== index);
         // Задаю обновленное состояние для массива слов, если данные хранятся в state
         console.log(`Deleted word at index ${index}`);
-        console.log(newData);
+        setWords(newData);// Обновляем состояние
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
         setErrors({ ...errors, [name]: !value });// Проверяем, пустое ли поле
-        setCurrentWord((prev) => ({ ...prev, [name]: value }));
+        // setCurrentWord((prev) => ({ ...prev, [name]: value }));
     };
 
     const isFormValid = () => {
@@ -92,7 +95,7 @@ export default function DictionaryTable() {
                                     onChange={handleChange}
                                     className={`${errors.russian ? 'no-valid' : ''}`} /></td>
                                 <td>
-                                    <Button name="Сохранить" onClick={() => handleSave(index)} disabled={!isFormValid()} />
+                                    <SaveButton name="Сохранить" onClick={() => handleSave(index)} disabled={isFormValid ? false : true} />
                                     <Button name="Отмена" onClick={handleCancel} />
                                 </td>
                             </>
