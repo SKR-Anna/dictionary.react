@@ -10,8 +10,21 @@ export const CardProvider = ({ children }) => {
     const addCard = (card) =>
         setCards((prevCards) => [...prevCards, card]);
 
-    const removeCard = (number) =>
-        setCards((prevCards) => prevCards.filter((card) => card.number !== number))
+    // const removeCard = (number) =>
+    //     setCards((prevCards) => prevCards.filter((card) => card.number !== number))
+    const removeCard = async (id) => {
+        try {
+            const response = await fetch(`http://itgirlschool.justmakeit.ru/api/words/${id}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Ошибка при удалении слова')
+            }
+            setCards((prevCards) => prevCards.filter((card) => card.id !== id));
+        } catch (error) {
+            console.error('Ошибка при удалении слова', error);
+        }
+    };
 
     useEffect(() => {
         fetch('http://itgirlschool.justmakeit.ru/api/words')

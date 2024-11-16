@@ -1,6 +1,5 @@
 
-import { useState } from "react" // импортируем хук
-import { useContext } from "react"
+import { useState, useContext } from "react" // импортируем хук
 import Button from "../button/Button" // импортируем кнопку
 // import data from "../../data" //импортируем массив слов
 import "./Table.css"
@@ -15,29 +14,25 @@ export default function DictionaryTable() {
     const [errors, setErrors] = useState({ english: false, transcription: false, russian: false });
     //const [words, setWords] = useState(data); // храним данные в состоянии, это поможет потом переключться на api, я надеюсь
     //const [currentWord, setCurrentWord] = useState({ english: '', transcription: '', russian: '' }); //состояние для отслеживания текущих значений таблицы, чтобы DictionaryTable сохранял текущее состояние редактируемых полей, а не полагался на defaultValue
-    const { cardss } = useContext(CardContext);
+    const { cardss, setCards, removeCard } = useContext(CardContext);
 
     const handleEdit = (index) => {
         // console.log("clicked")
         setEditIndex(index);
-        setFormData({
-            english: data[index].english,
-            transcription: data[index].transcription,
-            russian: data[index].russian
-        });
+        setFormData({ ...cardss[index] });
         // setCurrentWord(words[index]);
         // console.log(currentWord);
     };
 
     const handleCancel = () => {
         setEditIndex(null);
-        // setFormData({ english: '', transcription: '', russian: '' }); // Сброс формы
+        setFormData({ english: '', transcription: '', russian: '' }); // Сброс формы
     };
 
     const handleSave = (index) => {
         const updatedWord = { ...formData }; // Создаем новый объект слова
-        const newWords = words.map((word, i) => (i === index ? updatedWord : word));
-        setWords(newWords);
+        const newWords = cardss.map((word, i) => (i === index ? updatedWord : word));
+        setCards(newWords);
         setEditIndex(null);
         // Здесь должна быть логика для сохранения изменений
         // Например, можно использовать API или обновлять локальный массив данных
@@ -45,12 +40,17 @@ export default function DictionaryTable() {
         setEditIndex(null);
     };
 
-    const handleDelete = (index) => {
-        const newData = data.filter((_, i) => i !== index);
-        // Задаю обновленное состояние для массива слов, если данные хранятся в state
+    // const handleDelete = async (index) => {
+    //     const newData = cardss.filter((_, i) => i !== index);
+    //     // Задаю обновленное состояние для массива слов, если данные хранятся в state
+    //     console.log(`Deleted word at index ${index}`);
+    //     setCards(newData);// Обновляем состояние
+    // };
+    const handleDelete = async (index) => {
+        const wordToDelete = cardss[index];
+        await removeCard(wordToDelete.id);
         console.log(`Deleted word at index ${index}`);
-        setWords(newData);// Обновляем состояние
-    };
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -60,14 +60,14 @@ export default function DictionaryTable() {
     };
 
     const isFormValid = () => {
-        return Object.values(formData).every(value => value.trim() !== '');
+        Object.values(formData).every(value => value.trim() !== '');
     };
 
     return (
         <>
             <>
                 <AddWord />
-                <SaveButton name="Добавить слово" onClick={() => handleSave()} disabled={isFormValid ? false : true} />
+                <SaveButton name="Добавить слово" onClick={() => handleSave()} disabled={!isFormValid} />
             </>
             <table>
                 <thead>
