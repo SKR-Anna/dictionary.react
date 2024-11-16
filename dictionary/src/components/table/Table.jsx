@@ -1,18 +1,21 @@
 
 import { useState } from "react" // импортируем хук
+import { useContext } from "react"
 import Button from "../button/Button" // импортируем кнопку
-import data from "../../data" //импортируем массив слов
+// import data from "../../data" //импортируем массив слов
 import "./Table.css"
 import SaveButton from "../button/SaveButton";
 import AddWord from "../addWord/AddWord";
+import { CardContext } from "../../context/context";
 
 
 export default function DictionaryTable() {
     const [editIndex, setEditIndex] = useState(null);
     const [formData, setFormData] = useState({ english: '', transcription: '', russian: '' });
     const [errors, setErrors] = useState({ english: false, transcription: false, russian: false });
-    const [words, setWords] = useState(data); // храним данные в состоянии, это поможет потом переключться на api, я надеюсь
+    //const [words, setWords] = useState(data); // храним данные в состоянии, это поможет потом переключться на api, я надеюсь
     //const [currentWord, setCurrentWord] = useState({ english: '', transcription: '', russian: '' }); //состояние для отслеживания текущих значений таблицы, чтобы DictionaryTable сохранял текущее состояние редактируемых полей, а не полагался на defaultValue
+    const { cardss } = useContext(CardContext);
 
     const handleEdit = (index) => {
         // console.log("clicked")
@@ -28,7 +31,7 @@ export default function DictionaryTable() {
 
     const handleCancel = () => {
         setEditIndex(null);
-        setFormData({ english: '', transcription: '', russian: '' }); // Сброс формы
+        // setFormData({ english: '', transcription: '', russian: '' }); // Сброс формы
     };
 
     const handleSave = (index) => {
@@ -76,7 +79,7 @@ export default function DictionaryTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((word, index) => (
+                    {cardss.map((word, index) => (
                         <tr key={word.id}>
                             {editIndex === index ? (
                                 <>
