@@ -9,7 +9,6 @@ const SaveButton = forwardRef(function Button(props, ref) {
             className={styles.button}
             onClick={props.onClick}>
             {props.name}
-            disabled={ }
         </ button >
     );
 });

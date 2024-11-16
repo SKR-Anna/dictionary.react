@@ -4,6 +4,7 @@ import Button from "../button/Button" // импортируем кнопку
 import data from "../../data" //импортируем массив слов
 import "./Table.css"
 import SaveButton from "../button/SaveButton";
+import AddWord from "../addWord/AddWord";
 
 
 export default function DictionaryTable() {
@@ -60,61 +61,67 @@ export default function DictionaryTable() {
     };
 
     return (
-        <table>
-            <thead>
-                <tr>
-                    <th>Слово</th>
-                    <th>Транскрипция</th>
-                    <th>Перевод</th>
-                    <th>Действие</th>
-                </tr>
-            </thead>
-            <tbody>
-                {data.map((word, index) => (
-                    <tr key={word.id}>
-                        {editIndex === index ? (
-                            <>
-                                <td><input
-                                    type="text"
-                                    name="english"
-                                    value={formData.english}
-                                    onChange={handleChange}
-                                    className={`${errors.english ? 'no-valid' : ''}`} />
-                                </td>
-                                <td><input
-                                    type="text"
-                                    name="transcription"
-                                    value={formData.transcription}
-                                    onChange={handleChange}
-                                    className={`${errors.transcription ? 'no-valid' : ''}`} />
-                                </td>
-                                <td><input
-                                    type="text"
-                                    name="russian"
-                                    value={formData.russian}
-                                    onChange={handleChange}
-                                    className={`${errors.russian ? 'no-valid' : ''}`} /></td>
-                                <td>
-                                    <SaveButton name="Сохранить" onClick={() => handleSave(index)} disabled={isFormValid ? false : true} />
-                                    <Button name="Отмена" onClick={handleCancel} />
-                                </td>
-                            </>
-                        ) : (
-                            <>
-                                <td>{word.english}</td>
-                                <td>{word.transcription}</td>
-                                <td>{word.russian}</td>
-                                <td>
-                                    <Button name="Изменить" onClick={() => handleEdit(index)} />
-                                    <Button name="Удалить" onClick={() => handleDelete(index)} />
-                                </td>
-                            </>
-                        )}
-
+        <>
+            <>
+                <AddWord />
+                <SaveButton name="Сохранить" onClick={() => handleSave()} disabled={isFormValid ? false : true} />
+            </>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Слово</th>
+                        <th>Транскрипция</th>
+                        <th>Перевод</th>
+                        <th>Действие</th>
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {data.map((word, index) => (
+                        <tr key={word.id}>
+                            {editIndex === index ? (
+                                <>
+                                    <td><input
+                                        type="text"
+                                        name="english"
+                                        value={formData.english}
+                                        onChange={handleChange}
+                                        className={`${errors.english ? 'no-valid' : ''}`} />
+                                    </td>
+                                    <td><input
+                                        type="text"
+                                        name="transcription"
+                                        value={formData.transcription}
+                                        onChange={handleChange}
+                                        className={`${errors.transcription ? 'no-valid' : ''}`} />
+                                    </td>
+                                    <td><input
+                                        type="text"
+                                        name="russian"
+                                        value={formData.russian}
+                                        onChange={handleChange}
+                                        className={`${errors.russian ? 'no-valid' : ''}`} /></td>
+                                    <td>
+                                        <SaveButton name="Сохранить" onClick={() => handleSave(index)} disabled={isFormValid ? false : true} />
+                                        <Button name="Отмена" onClick={handleCancel} />
+                                    </td>
+                                </>
+                            ) : (
+                                <>
+                                    <td>{word.english}</td>
+                                    <td>{word.transcription}</td>
+                                    <td>{word.russian}</td>
+                                    <td>
+                                        <Button name="Изменить" onClick={() => handleEdit(index)} />
+                                        <Button name="Удалить" onClick={() => handleDelete(index)} />
+                                    </td>
+                                </>
+                            )}
+
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </>
     );
 };
 
