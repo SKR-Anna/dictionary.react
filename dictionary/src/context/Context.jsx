@@ -7,11 +7,45 @@ export const CardProvider = ({ children }) => {
     // const [loading, setLoading] = useState(true)
     // const [error, setError] = useState(null)
 
-    const addCard = (card) =>
-        setCards((prevCards) => [...prevCards, card]);
+    const addCard = async (card) => {
+        try {
+            const response = await fetch('http://itgirlschool.justmakeit.ru/api/words', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(card), // Отправляем данные в формате JSON
+            });
+            if (!response.ok) {
+                throw new Error('Ошибка при добавлении слова');
+            }
+            const newCard = await response.json(); // получаем добавленное слово из ответа
+            setCards((prevCards) => [...prevCards, newCard]); //обновляем состояния
+        } catch (error) {
+            console.error('Ошибка при добавлении слова:', error);
+        }
+    };
 
-    // const removeCard = (number) =>
-    //     setCards((prevCards) => prevCards.filter((card) => card.number !== number))
+    const updateCard = async (id, updatedCard) => {
+        try {
+            const response = await fetch(`http://itgirlschool.justmakeit.ru/api/words/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedCard),// Отправляем обновленные данные в формате JSON
+            });
+            if (!response.ok) {
+                throw new Error('Ошибка при обновлении слова');
+            }
+            return await response.json(); // Возвращаем обновленное слово
+            // const newCard = await response.json();// Получаем обновленное слово из ответа
+            // setCards((prevCards) => prevCards.map((card) => card.id === id ? newCard : card)); // Обновляем состояние
+        } catch (error) {
+            console.error('Ошибка при обновлении слова:', error);
+        }
+    };
+
     const removeCard = async (id) => {
         try {
             const response = await fetch(`http://itgirlschool.justmakeit.ru/api/words/${id}`, {
@@ -46,6 +80,6 @@ export const CardProvider = ({ children }) => {
     }, []);
 
     return (
-        <CardContext.Provider value={{ cardss, addCard, removeCard }}>{children}</CardContext.Provider>
+        <CardContext.Provider value={{ cardss, addCard, removeCard, updateCard }}>{children}</CardContext.Provider>
     );
 }
