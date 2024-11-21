@@ -13,6 +13,7 @@ export default function DictionaryTable() {
     const [formData, setFormData] = useState({ english: '', transcription: '', russian: '' });
     const [errors, setErrors] = useState({ english: false, transcription: false, russian: false });
     const { cardss, setCards, removeCard } = useContext(CardContext);
+    const [visibleCount, setVisibleCount] = useState(10); // в честь поломки апи добавляем вот это вместо 1500 слов 
 
     // const handleEdit = async (index) => {
     //     const wordToUpdate = cardss[index]; // Получаем текущее слово по индексу
@@ -45,7 +46,8 @@ export default function DictionaryTable() {
             console.error("Форма не валидна. Сохранение невозможно.");
             return;
         }
-        const newCard = await handleEdit(index);// Получаем обновленное слово, оно нам надо?
+        const updatedCard = { ...formData }; // Создаем объект с обновленными данными
+        const newCard = await updatedCard[index].id;// Обновляем карту через API
         setCards((prevCards) => prevCards.map((card) => (card.id === newCard ? newCard : card)));// Обновляем состояние
         setEditIndex(null); // Сбрасываем индекс редактирования
         console.log(`Saving changes for word ${index}`);
@@ -90,7 +92,7 @@ export default function DictionaryTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {cardss.map((word, index) => (
+                    {cardss.slice(0, visibleCount).map((word, index) => (
                         <tr key={word.id}>
                             {editIndex === index ? (
                                 <>
