@@ -45,9 +45,12 @@ export default function DictionaryTable() {
         setErrors({ ...errors, [name]: !value });// Проверяем, пустое ли поле
     };
 
-    const isFormValid = () => {
-        Object.values(formData).every(value => value.trim() !== '');
-    };
+    // const isFormValid = () => {
+    //     Object.values(formData).every(value => value.trim() !== '');
+    // };
+    const isFormValid = formData.english.trim() !== ''
+        && formData.transcription.trim() !== ''
+        && formData.russian.trim() !== '';
 
     return (
         <>
@@ -90,7 +93,7 @@ export default function DictionaryTable() {
                                         onChange={handleChange}
                                         className={`${errors.russian ? 'no-valid' : ''}`} /></td>
                                     <td>
-                                        <SaveButton name="Сохранить" onClick={() => handleSave(index)} disabled={isFormValid ? false : true} />
+                                        <SaveButton name="Сохранить" onClick={() => handleSave(index)} disabled={!isFormValid} />
                                         <Button name="Отмена" onClick={handleCancel} />
                                     </td>
                                 </>
