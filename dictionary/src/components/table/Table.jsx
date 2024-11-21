@@ -12,13 +12,27 @@ export default function DictionaryTable() {
     const [editIndex, setEditIndex] = useState(null);
     const [formData, setFormData] = useState({ english: '', transcription: '', russian: '' });
     const [errors, setErrors] = useState({ english: false, transcription: false, russian: false });
-    const { cardss, setCards, removeCard, updateCard } = useContext(CardContext);
+    const { cardss, setCards, removeCard } = useContext(CardContext);
 
-    const handleEdit = async (index) => {
-        const wordToUpdate = cardss[index]; // Получаем текущее слово по индексу
-        const updatedWord = { ...formData }; // Создаем новый объект слова
-        const newCard = await updateCard(wordToUpdate.id, updatedWord); // Асинхронно обновляем слово через API
-        return newCard; // Возвращаем обновленное слово
+    // const handleEdit = async (index) => {
+    //     const wordToUpdate = cardss[index]; // Получаем текущее слово по индексу
+    //     const updatedWord = { ...formData }; // Создаем новый объект слова
+    //     const newCard = await updateCard(wordToUpdate.id, updatedWord); // Асинхронно обновляем слово через API
+    //     return newCard; // Возвращаем обновленное слово
+    // };
+
+    const handleEdit = (index) => {
+        const wordToUpdate = cardss[index];
+        if (!wordToUpdate) {
+            console.error(`Ошибка: слово с индексом ${index} не найдено.`);
+            return;
+        }
+        setEditIndex(index);
+        setFormData({
+            english: wordToUpdate.english || '',
+            transcription: wordToUpdate.transcription || '',
+            russian: wordToUpdate.russian || '',
+        });
     };
 
     const handleCancel = () => {
@@ -27,6 +41,10 @@ export default function DictionaryTable() {
     };
 
     const handleSave = async (index) => {
+        if (!isFormValid) {
+            console.error("Форма не валидна. Сохранение невозможно.");
+            return;
+        }
         const newCard = await handleEdit(index);// Получаем обновленное слово, оно нам надо?
         setCards((prevCards) => prevCards.map((card) => (card.id === newCard ? newCard : card)));// Обновляем состояние
         setEditIndex(null); // Сбрасываем индекс редактирования
@@ -41,8 +59,12 @@ export default function DictionaryTable() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-        setErrors({ ...errors, [name]: !value });// Проверяем, пустое ли поле
+        setFormData({ ...formData, [name]: value }); // Обновляем состояние формы
+        //setErrors({ ...errors, [name]: !value });// Проверяем, пустое ли поле
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: value.trim() === '',
+        }));
     };
 
     // const isFormValid = () => {

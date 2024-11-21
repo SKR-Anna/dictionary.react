@@ -7,7 +7,9 @@ const SaveButton = forwardRef(function Button(props, ref) {
         < button
             ref={ref}
             className={styles.button}
-            onClick={props.onClick}>
+            onClick={props.onClick}
+        // disabled={props.disabled} не помогает сделать кнопку не активной
+        >
             {props.name}
         </ button >
     );
