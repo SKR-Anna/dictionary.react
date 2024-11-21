@@ -9,7 +9,7 @@ export const CardProvider = ({ children }) => {
 
     const addCard = async (card) => {
         try {
-            const response = await fetch('http://itgirlschool.justmakeit.ru/api/words', {
+            const response = await fetch('/api/words', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export const CardProvider = ({ children }) => {
 
     const updateCard = async (id, updatedCard) => {
         try {
-            const response = await fetch(`http://itgirlschool.justmakeit.ru/api/words/${id}`, {
+            const response = await fetch(`/api/words/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ export const CardProvider = ({ children }) => {
 
     const removeCard = async (id) => {
         try {
-            const response = await fetch(`http://itgirlschool.justmakeit.ru/api/words/${id}`, {
+            const response = await fetch(`/api/words/${id}`, {
                 method: 'DELETE',
             });
             if (!response.ok) {
@@ -61,7 +61,7 @@ export const CardProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        fetch('http://itgirlschool.justmakeit.ru/api/words')
+        fetch('/api/words')
             .then(response => {
                 if (response.ok) { //Проверяем, что код ответа 200
                     return response.json();
