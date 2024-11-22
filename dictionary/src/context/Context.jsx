@@ -9,7 +9,7 @@ export const CardProvider = ({ children }) => {
 
     const addCard = async (card) => {
         try {
-            const response = await fetch('/api/words', {
+            const response = await fetch('/api/words/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export const CardProvider = ({ children }) => {
 
     const updateCard = async (id, updatedCard) => {
         try {
-            const response = await fetch(`/api/words/${id}`, {
+            const response = await fetch(`/api/words/${id}/update`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ export const CardProvider = ({ children }) => {
 
     const removeCard = async (id) => {
         try {
-            const response = await fetch(`/api/words/${id}`, {
+            const response = await fetch(`/api/words/${id}/delete`, {
                 method: 'DELETE',
             });
             if (!response.ok) {
@@ -62,7 +62,7 @@ export const CardProvider = ({ children }) => {
 
     useEffect(() => {
         fetch('/api/words')
-            .then(response => {
+            .then((response) => {
                 if (response.ok) { //Проверяем, что код ответа 200
                     return response.json();
                 } else {
@@ -77,7 +77,7 @@ export const CardProvider = ({ children }) => {
             .catch((error) => {
                 console.error('error data', error)
             })
-    }, []);
+    }, [cardss]);
 
     return (
         <CardContext.Provider value={{ cardss, setCards, addCard, removeCard, updateCard }}>{children}</CardContext.Provider>

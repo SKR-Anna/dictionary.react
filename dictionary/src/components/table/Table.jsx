@@ -1,7 +1,7 @@
 
-import { useState, useContext } from "react" // импортируем хук
-import Button from "../button/Button" // импортируем кнопку
-// import data from "../../data" //импортируем массив слов
+import { useState, useContext } from "react"
+import Button from "../button/Button"
+// import data from "../../data" 
 import "./Table.css"
 import SaveButton from "../button/SaveButton";
 import AddWord from "../addWord/AddWord";
@@ -12,8 +12,8 @@ export default function DictionaryTable() {
     const [editIndex, setEditIndex] = useState(null);
     const [formData, setFormData] = useState({ english: '', transcription: '', russian: '' });
     const [errors, setErrors] = useState({ english: false, transcription: false, russian: false });
-    const { cardss, setCards, removeCard } = useContext(CardContext);
-    const [visibleCount, setVisibleCount] = useState(10); // в честь поломки апи добавляем вот это вместо 1500 слов 
+    const { cardss, setCards, removeCard, addCard, updatedCard } = useContext(CardContext);
+    // const [visibleCount, setVisibleCount] = useState(10); // в честь поломки апи добавляем вот это вместо 1500 слов slice(0, visibleCount) - это было добавлено в мап
 
     // const handleEdit = async (index) => {
     //     const wordToUpdate = cardss[index]; // Получаем текущее слово по индексу
@@ -41,17 +41,28 @@ export default function DictionaryTable() {
         setFormData({ english: '', transcription: '', russian: '' }); // Сброс формы
     };
 
-    const handleSave = async (index) => {
+    // const handleSave = async (index) => { // хендлер висел на кнопке "сохранить", поменяла на addCard - не работает 
+    //     if (!isFormValid) {
+    //         console.error("Форма не валидна. Сохранение невозможно.");
+    //         return;
+    //     }
+    //     const updatedCard = { ...formData }; // Создаем объект с обновленными данными
+    //     const newCard = await updatedCard[index].id;// Обновляем карту через API
+    //     setCards((prevCards) => prevCards.map((card) => (card.id === newCard ? newCard : card)));// Обновляем состояние
+    //     setEditIndex(null); // Сбрасываем индекс редактирования
+    //     console.log(`Saving changes for word ${index}`);
+    // }; ниже мои попытки переписать функцию
+
+    const handleSave = async (index, event) => {
+        event.preventDefoult();
         if (!isFormValid) {
             console.error("Форма не валидна. Сохранение невозможно.");
             return;
         }
-        const updatedCard = { ...formData }; // Создаем объект с обновленными данными
         const newCard = await updatedCard[index].id;// Обновляем карту через API
-        setCards((prevCards) => prevCards.map((card) => (card.id === newCard ? newCard : card)));// Обновляем состояние
+        addCard((prevCards) => prevCards.map((card) => (card.id === newCard ? newCard : card)));// Обновляем состояние
         setEditIndex(null); // Сбрасываем индекс редактирования
-        console.log(`Saving changes for word ${index}`);
-    };
+    }
 
     const handleDelete = async (index) => {
         const wordToDelete = cardss[index];
@@ -80,7 +91,8 @@ export default function DictionaryTable() {
         <>
             <>
                 <AddWord />
-                <SaveButton name="Добавить слово" onClick={() => handleSave()} disabled={!isFormValid} />
+                {/* <SaveButton name="Добавить слово" onClick={() => handleSave()} disabled={!isFormValid} /> */}
+                <SaveButton name="Добавить слово" onClick={() => addCard()} disabled={!isFormValid} />
             </>
             <table>
                 <thead>
@@ -92,7 +104,7 @@ export default function DictionaryTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {cardss.slice(0, visibleCount).map((word, index) => (
+                    {cardss.map((word, index) => (
                         <tr key={word.id}>
                             {editIndex === index ? (
                                 <>
@@ -117,7 +129,8 @@ export default function DictionaryTable() {
                                         onChange={handleChange}
                                         className={`${errors.russian ? 'no-valid' : ''}`} /></td>
                                     <td>
-                                        <SaveButton name="Сохранить" onClick={() => handleSave(index)} disabled={!isFormValid} />
+                                        {/* <SaveButton name="Сохранить" onClick={() => handleSave(index)} disabled={!isFormValid} /> */}
+                                        <SaveButton name="Сохранить" onClick={() => addCard(index)} disabled={!isFormValid} />
                                         <Button name="Отмена" onClick={handleCancel} />
                                     </td>
                                 </>
@@ -127,7 +140,8 @@ export default function DictionaryTable() {
                                     <td>{word.transcription}</td>
                                     <td>{word.russian}</td>
                                     <td>
-                                        <Button name="Изменить" onClick={() => handleEdit(index)} />
+                                        {/* <Button name="Изменить" onClick={() => handleEdit(index)} /> */}
+                                        <Button name="Изменить" onClick={() => updatedCard(index)} />
                                         <Button name="Удалить" onClick={() => handleDelete(index)} />
                                     </td>
                                 </>
