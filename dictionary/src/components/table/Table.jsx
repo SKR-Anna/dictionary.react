@@ -1,26 +1,25 @@
-
 import { useState, useContext } from "react"
 import Button from "../button/Button"
-// import data from "../../data" 
-import "./Table.css"
 import SaveButton from "../button/SaveButton";
 import AddWord from "../addWord/AddWord";
 import { CardContext } from "../../context/context";
-
+import "./Table.css";
 
 export default function DictionaryTable() {
     const [editIndex, setEditIndex] = useState(null);
-    const [formData, setFormData] = useState({ english: '', transcription: '', russian: '' });
-    const [errors, setErrors] = useState({ english: false, transcription: false, russian: false });
-    const { cardss, setCards, removeCard, addCard, updatedCard } = useContext(CardContext);
-    // const [visibleCount, setVisibleCount] = useState(10); // в честь поломки апи добавляем вот это вместо 1500 слов slice(0, visibleCount) - это было добавлено в мап
+    const [formData, setFormData] = useState({
+        english: '',
+        transcription: '',
+        russian: ''
+    });
+    const [errors, setErrors] = useState({
+        english: false,
+        transcription: false,
+        russian: false
+    });
 
-    // const handleEdit = async (index) => {
-    //     const wordToUpdate = cardss[index]; // Получаем текущее слово по индексу
-    //     const updatedWord = { ...formData }; // Создаем новый объект слова
-    //     const newCard = await updateCard(wordToUpdate.id, updatedWord); // Асинхронно обновляем слово через API
-    //     return newCard; // Возвращаем обновленное слово
-    // };
+    const { cardss, removeCard, addCard, updateCard } = useContext(CardContext);
+    // const [visibleCount, setVisibleCount] = useState(10); // в честь поломки апи добавляем вот это вместо 1500 слов slice(0, visibleCount) - это было добавлено в мап
 
     const handleEdit = (index) => {
         const wordToUpdate = cardss[index];
@@ -41,27 +40,17 @@ export default function DictionaryTable() {
         setFormData({ english: '', transcription: '', russian: '' }); // Сброс формы
     };
 
-    // const handleSave = async (index) => { // хендлер висел на кнопке "сохранить", поменяла на addCard - не работает 
-    //     if (!isFormValid) {
-    //         console.error("Форма не валидна. Сохранение невозможно.");
-    //         return;
-    //     }
-    //     const updatedCard = { ...formData }; // Создаем объект с обновленными данными
-    //     const newCard = await updatedCard[index].id;// Обновляем карту через API
-    //     setCards((prevCards) => prevCards.map((card) => (card.id === newCard ? newCard : card)));// Обновляем состояние
-    //     setEditIndex(null); // Сбрасываем индекс редактирования
-    //     console.log(`Saving changes for word ${index}`);
-    // }; ниже мои попытки переписать функцию
 
-    const handleSave = async (index, event) => {
-        event.preventDefoult();
+    const handleSave = async (index) => {
         if (!isFormValid) {
             console.error("Форма не валидна. Сохранение невозможно.");
             return;
         }
-        const newCard = await updatedCard[index].id;// Обновляем карту через API
-        addCard((prevCards) => prevCards.map((card) => (card.id === newCard ? newCard : card)));// Обновляем состояние
-        setEditIndex(null); // Сбрасываем индекс редактирования
+        const wordToUpdate = cardss[index];
+        const updatedWotd = { ...formData };
+
+        await updateCard(wordToUpdate.id, updatedWotd);// Используем updateCard из контекста
+        handleCancel(); // Сбрасываем состояние формы
     }
 
     const handleDelete = async (index) => {
@@ -73,19 +62,16 @@ export default function DictionaryTable() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value }); // Обновляем состояние формы
-        //setErrors({ ...errors, [name]: !value });// Проверяем, пустое ли поле
         setErrors((prevErrors) => ({
             ...prevErrors,
             [name]: value.trim() === '',
         }));
     };
 
-    // const isFormValid = () => {
-    //     Object.values(formData).every(value => value.trim() !== '');
-    // };
-    const isFormValid = formData.english.trim() !== ''
-        && formData.transcription.trim() !== ''
-        && formData.russian.trim() !== '';
+    const isFormValid =
+        formData.english.trim() !== '' &&
+        formData.transcription.trim() !== '' &&
+        formData.russian.trim() !== '';
 
     return (
         <>
@@ -130,7 +116,7 @@ export default function DictionaryTable() {
                                         className={`${errors.russian ? 'no-valid' : ''}`} /></td>
                                     <td>
                                         {/* <SaveButton name="Сохранить" onClick={() => handleSave(index)} disabled={!isFormValid} /> */}
-                                        <SaveButton name="Сохранить" onClick={() => addCard(index)} disabled={!isFormValid} />
+                                        <SaveButton name="Сохранить" onClick={() => handleSave(index)} disabled={!isFormValid} />
                                         <Button name="Отмена" onClick={handleCancel} />
                                     </td>
                                 </>
@@ -141,7 +127,7 @@ export default function DictionaryTable() {
                                     <td>{word.russian}</td>
                                     <td>
                                         {/* <Button name="Изменить" onClick={() => handleEdit(index)} /> */}
-                                        <Button name="Изменить" onClick={() => updatedCard(index)} />
+                                        <Button name="Изменить" onClick={() => handleEdit(index)} />
                                         <Button name="Удалить" onClick={() => handleDelete(index)} />
                                     </td>
                                 </>
