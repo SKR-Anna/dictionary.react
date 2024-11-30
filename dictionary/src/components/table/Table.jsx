@@ -2,7 +2,7 @@ import { useState, useContext } from "react"
 import Button from "../button/Button"
 import SaveButton from "../button/SaveButton";
 import AddWord from "../addWord/AddWord";
-import { CardContext } from "../../context/context";
+import { CardContext } from "../../context/Context";
 import "./Table.css";
 
 export default function DictionaryTable() {
@@ -18,7 +18,7 @@ export default function DictionaryTable() {
         russian: false
     });
 
-    const { cardss, removeCard, addCard, updateCard } = useContext(CardContext);
+    const { cardss, loading, error, removeCard, updateCard } = useContext(CardContext);
     // const [visibleCount, setVisibleCount] = useState(10); // в честь поломки апи добавляем вот это вместо 1500 слов slice(0, visibleCount) - это было добавлено в мап
 
     const handleEdit = (index) => {
@@ -47,7 +47,13 @@ export default function DictionaryTable() {
             return;
         }
         const wordToUpdate = cardss[index];
-        const updatedWotd = { ...formData };
+        const updatedWotd = {
+            id: wordToUpdate.id,
+            english: formData.english,
+            transcription: formData.transcription,
+            russian: formData.russian,
+            tags: ' '
+        };
 
         await updateCard(wordToUpdate.id, updatedWotd);// Используем updateCard из контекста
         handleCancel(); // Сбрасываем состояние формы
@@ -73,13 +79,17 @@ export default function DictionaryTable() {
         formData.transcription.trim() !== '' &&
         formData.russian.trim() !== '';
 
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error.message}</div>
+    }
+
     return (
         <>
-            <>
-                <AddWord />
-                {/* <SaveButton name="Добавить слово" onClick={() => handleSave()} disabled={!isFormValid} /> */}
-                <SaveButton name="Добавить слово" onClick={() => addCard()} disabled={!isFormValid} />
-            </>
+            <AddWord />
             <table>
                 <thead>
                     <tr>
@@ -115,7 +125,6 @@ export default function DictionaryTable() {
                                         onChange={handleChange}
                                         className={`${errors.russian ? 'no-valid' : ''}`} /></td>
                                     <td>
-                                        {/* <SaveButton name="Сохранить" onClick={() => handleSave(index)} disabled={!isFormValid} /> */}
                                         <SaveButton name="Сохранить" onClick={() => handleSave(index)} disabled={!isFormValid} />
                                         <Button name="Отмена" onClick={handleCancel} />
                                     </td>
@@ -126,7 +135,6 @@ export default function DictionaryTable() {
                                     <td>{word.transcription}</td>
                                     <td>{word.russian}</td>
                                     <td>
-                                        {/* <Button name="Изменить" onClick={() => handleEdit(index)} /> */}
                                         <Button name="Изменить" onClick={() => handleEdit(index)} />
                                         <Button name="Удалить" onClick={() => handleDelete(index)} />
                                     </td>

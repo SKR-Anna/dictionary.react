@@ -9,6 +9,7 @@ export default defineConfig({
       "/search": {
         target: "https://www.google.com",
         changeOrigin: true,
+        secure: false,
       },
       "/api": {
         target: "http://itgirlschool.justmakeit.ru",

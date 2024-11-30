@@ -1,11 +1,52 @@
 import { createContext, useState, useEffect } from "react";
 
-export const CardContext = createContext();
+export const CardContext = createContext({
+    cardss: [],
+    loading: true,
+    error: null,
+    newWord: {
+        id: "",
+        english: "",
+        transcription: "",
+        russian: "",
+        tags: " "
+    }
+});
 
 export const CardProvider = ({ children }) => {
     const [cardss, setCards] = useState([]);
-    // const [loading, setLoading] = useState(true)
-    // const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const [newWord, setNewWord] = useState({
+        id: "",
+        english: "",
+        transcription: "",
+        russian: "",
+        tags: " "
+    });
+
+    useEffect(() => {
+        const fetchWords = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch('/api/words');
+                if (!response.ok) {
+                    throw new Error('Не удалось загрузить слова с сервера')
+                }
+                const data = await response.json();
+                console.log('Данные получены:', data);
+                setCards(data);
+            }
+            catch (error) {
+                console.error('Ошибка при загрузке:', error);
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchWords();
+    }, []);
 
     const addCard = async (card) => {
         try {
@@ -29,7 +70,7 @@ export const CardProvider = ({ children }) => {
     const updateCard = async (id, updatedCard) => {
         try {
             const response = await fetch(`/api/words/${id}/update`, {
-                method: 'PUT',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -38,9 +79,8 @@ export const CardProvider = ({ children }) => {
             if (!response.ok) {
                 throw new Error('Ошибка при обновлении слова');
             }
-            return await response.json(); // Возвращаем обновленное слово
-            // const newCard = await response.json();// Получаем обновленное слово из ответа
-            // setCards((prevCards) => prevCards.map((card) => card.id === id ? newCard : card)); // Обновляем состояние
+            const updatedCardData = await response.json();// Получаем обновленное слово из ответа
+            setCards((prevCards) => prevCards.map((card) => card.id === id ? updatedCardData : card)); // Обновляем состояние
         } catch (error) {
             console.error('Ошибка при обновлении слова:', error);
         }
@@ -49,7 +89,7 @@ export const CardProvider = ({ children }) => {
     const removeCard = async (id) => {
         try {
             const response = await fetch(`/api/words/${id}/delete`, {
-                method: 'DELETE',
+                method: 'POST',
             });
             if (!response.ok) {
                 throw new Error('Ошибка при удалении слова')
@@ -60,26 +100,7 @@ export const CardProvider = ({ children }) => {
         }
     };
 
-    useEffect(() => {
-        fetch('/api/words')
-            .then((response) => {
-                if (response.ok) { //Проверяем, что код ответа 200
-                    return response.json();
-                } else {
-                    throw new Error('Ошибка');
-                }
-            })
-            .then((data) => {
-                setCards(data)
-                // setLoading(false)
-            })
-            // .catch(error => setError(error));
-            .catch((error) => {
-                console.error('error data', error)
-            })
-    }, [cardss]);
-
     return (
-        <CardContext.Provider value={{ cardss, setCards, addCard, removeCard, updateCard }}>{children}</CardContext.Provider>
+        <CardContext.Provider value={{ cardss, loading, error, newWord, setNewWord, setCards, addCard, removeCard, updateCard }}>{children}</CardContext.Provider>
     );
 }
